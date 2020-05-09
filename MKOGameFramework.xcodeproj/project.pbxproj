@@ -10,6 +10,8 @@
 		D99E0F0B24662010006721CD /* MKOGameFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D99E0F0124662010006721CD /* MKOGameFramework.framework */; };
 		D99E0F1024662010006721CD /* MKOGameFrameworkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D99E0F0F24662010006721CD /* MKOGameFrameworkTests.swift */; };
 		D99E0F1224662010006721CD /* MKOGameFramework.h in Headers */ = {isa = PBXBuildFile; fileRef = D99E0F0424662010006721CD /* MKOGameFramework.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D99E0F1C2466321E006721CD /* HexView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D99E0F1B2466321E006721CD /* HexView.swift */; };
+		D99E0F1E24663272006721CD /* GameBoardClasses.swift in Sources */ = {isa = PBXBuildFile; fileRef = D99E0F1D24663272006721CD /* GameBoardClasses.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,6 +31,8 @@
 		D99E0F0A24662010006721CD /* MKOGameFrameworkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MKOGameFrameworkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D99E0F0F24662010006721CD /* MKOGameFrameworkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKOGameFrameworkTests.swift; sourceTree = "<group>"; };
 		D99E0F1124662010006721CD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D99E0F1B2466321E006721CD /* HexView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexView.swift; sourceTree = "<group>"; };
+		D99E0F1D24663272006721CD /* GameBoardClasses.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameBoardClasses.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +77,8 @@
 			children = (
 				D99E0F0424662010006721CD /* MKOGameFramework.h */,
 				D99E0F0524662010006721CD /* Info.plist */,
+				D99E0F1B2466321E006721CD /* HexView.swift */,
+				D99E0F1D24663272006721CD /* GameBoardClasses.swift */,
 			);
 			path = MKOGameFramework;
 			sourceTree = "<group>";
@@ -148,6 +154,7 @@
 				TargetAttributes = {
 					D99E0F0024662010006721CD = {
 						CreatedOnToolsVersion = 11.4.1;
+						LastSwiftMigration = 1140;
 					};
 					D99E0F0924662010006721CD = {
 						CreatedOnToolsVersion = 11.4.1;
@@ -195,6 +202,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D99E0F1C2466321E006721CD /* HexView.swift in Sources */,
+				D99E0F1E24663272006721CD /* GameBoardClasses.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -339,6 +348,7 @@
 		D99E0F1624662010006721CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
@@ -356,6 +366,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.sandcreekstudios.MKOGameFramework;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -363,6 +374,7 @@
 		D99E0F1724662010006721CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
@@ -387,6 +399,7 @@
 		D99E0F1924662010006721CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 5RKJCTW7W3;
@@ -405,6 +418,7 @@
 		D99E0F1A24662010006721CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 5RKJCTW7W3;
