@@ -143,6 +143,7 @@ public class GameBoard {
     public var rows: [GameBoardRow]
     public var CellHeight: CGFloat
     public var CellWidth: CGFloat
+    public var path: String = ""
 
     public init(initialBoard: [[GameBoardCellTerrain]], cellHeight: CGFloat) {
         self.rows = []
@@ -179,8 +180,102 @@ public class GameBoard {
     }
 
 
-    func highlightCell(x: Int, y: Int) {
-        rows[y].cells[x].selectCell()
+//    func highlightCell(x: Int, y: Int) {
+//        rows[y].cells[x].selectCell()
+//    }
+
+
+    public func OpenFile(path: String) -> Bool {
+        var retval = false
+        
+        print("OpenFile function is not implemented yet in Framework")
+        
+        return retval
+    }
+
+
+    public func SaveFile(path: String) -> Bool {
+        var retval = false
+
+        let fileMgr = FileManager.default
+
+        if !fileMgr.fileExists(atPath: path) {
+
+            fileMgr.createFile(atPath: path, contents: "".data(using: .utf8), attributes: nil)
+
+            let fileHandle = FileHandle(forWritingAtPath: path)
+
+            if fileHandle != nil {
+
+                SaveLine(fileHandle: fileHandle!, line: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
+
+                SaveBoard(fileHandle: fileHandle!)
+
+                fileHandle!.closeFile()
+
+                retval = true
+            }
+            else {
+                print("File open failed")
+            }
+        }
+
+        return retval
+    }
+
+
+    private func SaveBoard(fileHandle: FileHandle) {
+        SaveLine(fileHandle: fileHandle, line: "<Board>")
+
+        for y in 0..<self.rows.count {
+            SaveRow(fileHandle: fileHandle, row: y)
+        }
+
+        SaveLine(fileHandle: fileHandle, line: "</Board>")
+    }
+
+    
+    private func SaveRow(fileHandle: FileHandle, row: Int)  {
+        for x in 0..<self.rows[row].cells.count {
+            SaveLine(fileHandle: fileHandle, line: "  <Row>")
+            SaveCell(fileHandle: fileHandle, row: row, cell: x)
+            SaveLine(fileHandle: fileHandle, line: "  </Row>")
+        }
+    }
+    
+    
+    private func SaveCell(fileHandle: FileHandle,row: Int, cell: Int) {
+        
+
+        for y in 0..<self.rows[row].cells.count {
+            SaveLine(fileHandle: fileHandle, line: "    <Cell>")
+
+            var Terrain = ""
+
+            switch (self.rows[row].cells[cell].terrain) {
+            case .Grass: Terrain = "Grass"
+            case .Woods: Terrain = "Woods"
+            case .Water: Terrain = "Water"
+            case .Desert: Terrain = "Desert"
+            case .Mountain: Terrain = "Mountain"
+            case .Tundra: Terrain = "Tundra"
+            default: Terrain = "Other"
+            }
+
+            SaveLine(fileHandle: fileHandle, line: "      <Terrain>\(Terrain)</Terrain>")
+            SaveLine(fileHandle: fileHandle, line: "    </Cell>")
+        }
+    }
+    
+    
+    // private func SaveLine(stream: OutputStream, line: String) {
+    private func SaveLine(fileHandle: FileHandle, line: String) {
+        // print("    Starting line")
+        let lineCRLF = line + "\n"
+
+        let data = lineCRLF.data(using: String.Encoding(rawValue: String.Encoding.utf8.rawValue))
+
+        fileHandle.write(data!)
     }
 
 }
