@@ -202,22 +202,22 @@ public class GameBoard {
         if !fileMgr.fileExists(atPath: path) {
 
             fileMgr.createFile(atPath: path, contents: "".data(using: .utf8), attributes: nil)
+        }
 
-            let fileHandle = FileHandle(forWritingAtPath: path)
+        let fileHandle = FileHandle(forWritingAtPath: path)
 
-            if fileHandle != nil {
+        if fileHandle != nil {
 
-                SaveLine(fileHandle: fileHandle!, line: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
+            SaveLine(fileHandle: fileHandle!, line: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
 
-                SaveBoard(fileHandle: fileHandle!)
+            SaveBoard(fileHandle: fileHandle!)
 
-                fileHandle!.closeFile()
+            fileHandle!.closeFile()
 
-                retval = true
-            }
-            else {
-                print("File open failed")
-            }
+            retval = true
+        }
+        else {
+            print("File open failed")
         }
 
         return retval
@@ -236,35 +236,35 @@ public class GameBoard {
 
     
     private func SaveRow(fileHandle: FileHandle, row: Int)  {
+        SaveLine(fileHandle: fileHandle, line: "  <Row>")
+
         for x in 0..<self.rows[row].cells.count {
-            SaveLine(fileHandle: fileHandle, line: "  <Row>")
             SaveCell(fileHandle: fileHandle, row: row, cell: x)
-            SaveLine(fileHandle: fileHandle, line: "  </Row>")
         }
+
+        SaveLine(fileHandle: fileHandle, line: "  </Row>")
     }
     
     
     private func SaveCell(fileHandle: FileHandle,row: Int, cell: Int) {
         
+        SaveLine(fileHandle: fileHandle, line: "    <Cell>")
 
-        for y in 0..<self.rows[row].cells.count {
-            SaveLine(fileHandle: fileHandle, line: "    <Cell>")
+        var Terrain = ""
 
-            var Terrain = ""
-
-            switch (self.rows[row].cells[cell].terrain) {
-            case .Grass: Terrain = "Grass"
-            case .Woods: Terrain = "Woods"
-            case .Water: Terrain = "Water"
-            case .Desert: Terrain = "Desert"
-            case .Mountain: Terrain = "Mountain"
-            case .Tundra: Terrain = "Tundra"
-            default: Terrain = "Other"
-            }
-
-            SaveLine(fileHandle: fileHandle, line: "      <Terrain>\(Terrain)</Terrain>")
-            SaveLine(fileHandle: fileHandle, line: "    </Cell>")
+        switch (self.rows[row].cells[cell].terrain) {
+        case .Grass: Terrain = "Grass"
+        case .Woods: Terrain = "Woods"
+        case .Water: Terrain = "Water"
+        case .Desert: Terrain = "Desert"
+        case .Mountain: Terrain = "Mountain"
+        case .Tundra: Terrain = "Tundra"
+        default: Terrain = "Other"
         }
+
+        SaveLine(fileHandle: fileHandle, line: "      <Terrain>\(Terrain)</Terrain>")
+
+        SaveLine(fileHandle: fileHandle, line: "    </Cell>")
     }
     
     
