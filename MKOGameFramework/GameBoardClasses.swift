@@ -187,20 +187,44 @@ public class GameBoard {
 
     public func OpenFile(path: String) -> Bool {
         var retval = false
-        
+
         print("OpenFile function is not implemented yet in Framework")
-        
+
         return retval
     }
 
 
-    public func SaveFile(path: String) -> Bool {
+    public func SaveFile(path: String, type: String) -> Bool {
+        var retval = false
+
+        if type == "XML" {
+            retval = SaveXMLFile(path: path)
+        }
+        else {
+            retval = SaveJSONFile(path: path)
+        }
+
+        return retval
+    }
+
+
+    private func SaveJSONFile(path: String) -> Bool {
+        var retval = false
+
+        // build JSONOutput data
+
+        // write JSONEncoder
+
+        return retval
+    }
+
+
+    private func SaveXMLFile(path: String) -> Bool {
         var retval = false
 
         let fileMgr = FileManager.default
 
         if !fileMgr.fileExists(atPath: path) {
-
             fileMgr.createFile(atPath: path, contents: "".data(using: .utf8), attributes: nil)
         }
 
@@ -208,9 +232,9 @@ public class GameBoard {
 
         if fileHandle != nil {
 
-            SaveLine(fileHandle: fileHandle!, line: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
+            SaveXMLLine(fileHandle: fileHandle!, line: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
 
-            SaveBoard(fileHandle: fileHandle!)
+            SaveXMLBoard(fileHandle: fileHandle!)
 
             fileHandle!.closeFile()
 
@@ -224,31 +248,31 @@ public class GameBoard {
     }
 
 
-    private func SaveBoard(fileHandle: FileHandle) {
-        SaveLine(fileHandle: fileHandle, line: "<Board>")
+    private func SaveXMLBoard(fileHandle: FileHandle) {
+        SaveXMLLine(fileHandle: fileHandle, line: "<Board>")
 
         for y in 0..<self.rows.count {
-            SaveRow(fileHandle: fileHandle, row: y)
+            SaveXMLRow(fileHandle: fileHandle, row: y)
         }
 
-        SaveLine(fileHandle: fileHandle, line: "</Board>")
+        SaveXMLLine(fileHandle: fileHandle, line: "</Board>")
     }
 
-    
-    private func SaveRow(fileHandle: FileHandle, row: Int)  {
-        SaveLine(fileHandle: fileHandle, line: "  <Row>")
+
+    private func SaveXMLRow(fileHandle: FileHandle, row: Int)  {
+        SaveXMLLine(fileHandle: fileHandle, line: "  <Row>")
 
         for x in 0..<self.rows[row].cells.count {
-            SaveCell(fileHandle: fileHandle, row: row, cell: x)
+            SaveXMLCell(fileHandle: fileHandle, row: row, cell: x)
         }
 
-        SaveLine(fileHandle: fileHandle, line: "  </Row>")
+        SaveXMLLine(fileHandle: fileHandle, line: "  </Row>")
     }
-    
-    
-    private func SaveCell(fileHandle: FileHandle,row: Int, cell: Int) {
-        
-        SaveLine(fileHandle: fileHandle, line: "    <Cell>")
+
+
+    private func SaveXMLCell(fileHandle: FileHandle,row: Int, cell: Int) {
+
+        SaveXMLLine(fileHandle: fileHandle, line: "    <Cell>")
 
         var Terrain = ""
 
@@ -262,14 +286,13 @@ public class GameBoard {
         default: Terrain = "Other"
         }
 
-        SaveLine(fileHandle: fileHandle, line: "      <Terrain>\(Terrain)</Terrain>")
+        SaveXMLLine(fileHandle: fileHandle, line: "      <Terrain>\(Terrain)</Terrain>")
 
-        SaveLine(fileHandle: fileHandle, line: "    </Cell>")
+        SaveXMLLine(fileHandle: fileHandle, line: "    </Cell>")
     }
-    
-    
-    // private func SaveLine(stream: OutputStream, line: String) {
-    private func SaveLine(fileHandle: FileHandle, line: String) {
+
+
+    private func SaveXMLLine(fileHandle: FileHandle, line: String) {
         // print("    Starting line")
         let lineCRLF = line + "\n"
 
@@ -278,4 +301,31 @@ public class GameBoard {
         fileHandle.write(data!)
     }
 
+}
+
+
+
+private class JSONOutputCell: Codable {
+    var Terrain : String
+}
+
+private class JSONOutputRow: Codable {
+    var cell : [JSONOutputCell]
+}
+
+private class JSONOutputBoard: Codable {
+    var row : [JSONOutputRow]
+}
+
+
+private class JSONInputCell: Decodable {
+    var Terrain : String
+}
+
+private class JSONInputRow: Decodable {
+    var cell : [JSONInputCell]
+}
+
+private class JSONInputBoard: Decodable {
+    var row : [JSONInputRow]
 }
