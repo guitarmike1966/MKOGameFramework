@@ -61,6 +61,25 @@ public enum GameBoardCellTerrain {
             return NSColor.blue
         }
     }
+    
+    public func toString() -> String {
+        switch self {
+            case .Grass:
+                return "Grass"
+            case .Woods:
+                return "Woods"
+            case .Desert:
+                return "Desert"
+            case .Tundra:
+                return "Tundra"
+            case .Mountain:
+                return "Mountain"
+            case .Water:
+                return "Water"
+            default:
+                return "Other"
+        }
+    }
 }
 
 
@@ -188,7 +207,48 @@ public class GameBoard {
     public func OpenFile(path: String) -> Bool {
         var retval = false
 
-        print("OpenFile function is not implemented yet in Framework")
+        do {
+            var data = try String(contentsOfFile: path)
+
+            print("JSON data read:")
+            print("\(data)")
+
+            let decoder = JSONDecoder()
+ 
+            let jsonData = data.data(using: .utf8)!
+            let jsonBoard = try decoder.decode(JSONBoard.self, from: jsonData)
+
+            print("Successfully decoded JSON data")
+
+            for y in 0..<self.rows.count {
+
+                for x in 0..<self.rows[0].cells.count {
+                    var terrain = GameBoardCellTerrain.Grass
+
+                    switch jsonBoard.row[y].cell[x].Terrain {
+                    case "Grass" : terrain = .Grass
+                    case "Woods" : terrain = .Woods
+                    case "Water" : terrain = .Water
+                    case "Desert" : terrain = .Desert
+                    case "Mountain" : terrain = .Mountain
+                    case "Tundra" : terrain = .Tundra
+                    default : terrain = .Other
+                    }
+
+                    self.rows[y].cells[x].terrain = terrain
+                    self.rows[y].cells[x].view.color = terrain.toColor()
+                    self.rows[y].cells[x].view.display()
+                }
+            }
+
+            retval = true
+        }
+        catch {
+            print("Open JSON file error: \(error)")
+        }
+        
+
+        print("OpenFile function is not fully implemented yet in Framework")
 
         return retval
     }
@@ -212,8 +272,41 @@ public class GameBoard {
         var retval = false
 
         // build JSONOutput data
+        
+        var jsonBoard = JSONBoard(rows: self.rows.count, cols: self.rows[0].cells.count, row: [])
+        
+        for y in 0..<self.rows.count {
+            
+            let newRow = JSONRow(cell: [])
+            jsonBoard.row.append(newRow)
+            
+            for x in 0..<self.rows[y].cells.count {
+                let newCell = JSONCell(Terrain: self.rows[y].cells[x].terrain.toString())
+                jsonBoard.row[y].cell.append(newCell)
+            }
+        }
 
         // write JSONEncoder
+
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .prettyPrinted
+
+        do {
+            let data = try encoder.encode(jsonBoard)
+            print("\nResulting JSON")
+            print(String(data: data, encoding: .utf8)!)
+
+            let fileURL = URL(fileURLWithPath: path)
+            do {
+                try data.write(to: fileURL, options: .atomic)
+            }
+            catch {
+                print("Write JSON error: \(error)")
+            }
+        }
+        catch {
+            print("\(error)")
+        }
 
         return retval
     }
@@ -274,19 +367,19 @@ public class GameBoard {
 
         SaveXMLLine(fileHandle: fileHandle, line: "    <Cell>")
 
-        var Terrain = ""
+//        var Terrain = ""
 
-        switch (self.rows[row].cells[cell].terrain) {
-        case .Grass: Terrain = "Grass"
-        case .Woods: Terrain = "Woods"
-        case .Water: Terrain = "Water"
-        case .Desert: Terrain = "Desert"
-        case .Mountain: Terrain = "Mountain"
-        case .Tundra: Terrain = "Tundra"
-        default: Terrain = "Other"
-        }
+//        switch (self.rows[row].cells[cell].terrain) {
+//        case .Grass: Terrain = "Grass"
+//        case .Woods: Terrain = "Woods"
+//        case .Water: Terrain = "Water"
+//        case .Desert: Terrain = "Desert"
+//        case .Mountain: Terrain = "Mountain"
+//        case .Tundra: Terrain = "Tundra"
+//        default: Terrain = "Other"
+//        }
 
-        SaveXMLLine(fileHandle: fileHandle, line: "      <Terrain>\(Terrain)</Terrain>")
+        SaveXMLLine(fileHandle: fileHandle, line: "      <Terrain>\(self.rows[row].cells[cell].terrain.toString())</Terrain>")
 
         SaveXMLLine(fileHandle: fileHandle, line: "    </Cell>")
     }
@@ -305,27 +398,31 @@ public class GameBoard {
 
 
 
-private class JSONOutputCell: Codable {
+struct JSONCell: Codable {
     var Terrain : String
 }
 
-private class JSONOutputRow: Codable {
-    var cell : [JSONOutputCell]
+struct JSONRow: Codable {
+    var cell : [JSONCell]
 }
 
-private class JSONOutputBoard: Codable {
-    var row : [JSONOutputRow]
+struct JSONBoard: Codable {
+    var rows : Int
+    var cols : Int
+    var row : [JSONRow]
 }
 
 
-private class JSONInputCell: Decodable {
-    var Terrain : String
-}
-
-private class JSONInputRow: Decodable {
-    var cell : [JSONInputCell]
-}
-
-private class JSONInputBoard: Decodable {
-    var row : [JSONInputRow]
-}
+//private class JSONInputCell: Decodable {
+//    var Terrain : String
+//}
+//
+//private class JSONInputRow: Decodable {
+//    var cell : [JSONInputCell]
+//}
+//
+//private class JSONInputBoard: Decodable {
+//    var rows : Int
+//    var cols : Int
+//    var row : [JSONInputRow]
+//}
